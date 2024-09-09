@@ -3,7 +3,7 @@
 }
 
 .contact-us {
-  width: 90vh;
+  max-width: 90vh;
   display: inline-block;
   }
   
