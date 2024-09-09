@@ -1,0 +1,84 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 5vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 8vh;
+  display: block;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.mainContainer {
+  background-color: #373b43;
+  display: grid;
+  color: #ffffff;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.App-footer {
+  background-color: #282c34;
+  min-height: 20vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.footer-logo{
+  max-width: 5vh;
+  max-height: 5vh;
+  overflow: hidden; /* To hide any overflow */
+  position: relative; /* If you need to position children */
+  padding: 5px;
+}
+
+.footer-logo-img{
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Options: cover, contain, fill, none, scale-down */
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.global-nav__nav {
+  display: inline-flex;
+}
+
+.global-nav__nav__primary-items{
+  list-style: none;
+  display: flex;
+}
+
+.global-nav__primary-item{
+  padding: 5px;
+}
