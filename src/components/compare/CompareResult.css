@@ -2,6 +2,7 @@
     width: 90%;
     min-height: 30vmin;
     display: inline-block;
+    text-align: left;
 }
 
 .output{
@@ -12,11 +13,20 @@
 
 .diffResult{
     width: 70%;
-    float: left;
+    display: inline-block;
+    margin-right: 20px;
+    min-width: 200px;
+    /*float: left;*/
 }
 
 .diffCount{
 width: 20%;
 max-width: 250px;
-float: right;
+min-width: 200px;
+display: inline-block;
+/*float: right;*/
+}
+
+.diffState{
+    text-align: center;
 }
