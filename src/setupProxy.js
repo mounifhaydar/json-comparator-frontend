@@ -7,6 +7,7 @@ module.exports = function(app) {
     createProxyMiddleware({
       target: 'https://json-comparator-initial.onrender.com' ,
       changeOrigin: true,
+      secure: false, // Optional, depending on your environment.
     })
   );
 };

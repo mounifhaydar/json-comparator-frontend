@@ -26,7 +26,7 @@ function CompareMainContainer(){
 
   const [showBanner, setShowBanner] = useState(true);  // Controls the yellow banner visibility
   const [showErrorBanner, setShowErrorBanner] = useState(false);  // Controls the red banner visibility
-  const [data, setData] = useState(null);  // Holds data from the second API
+  const [showInfoBanner, setShowInfoBanner] = useState(false);  // Controls the yellow banner visibility
 
 
   const [leftInput, setLeftInput] = useState(null); // Use state for dynamic values
@@ -73,11 +73,12 @@ useEffect(() => {
       try {
         await wakeUpCompareAPI();  // Polling the first API until success or max attempts reached
         setShowBanner(false);  // Hide the yellow banner when successful
-        compareData();
+        setShowInfoBanner(true);  // Hide the yellow banner when successful
+        //compareData();
       } catch (error) {
         console.error('API error:', error);
-        setShowBanner(false);
-        setShowErrorBanner(true);  // Show the red banner if polling fails
+        //setShowBanner(false);
+        //setShowErrorBanner(true);  // Show the red banner if polling fails
       }finally{
         setLoading(false);
       }
@@ -100,6 +101,7 @@ const compareData = async () => {
 
     setLoading(true); // Set loading state to true before API call
     const cmpOut =  await fetchCompareDataAPI(jsonString);
+    alert(JSON.stringify(cmpOut, null, 2));
     setCompareOut(JSON.stringify(cmpOut, null, 2));
   
     setLoading(false);
@@ -156,6 +158,13 @@ const clear = async () => {
       </Alert>
     </div>
       
+            {/* Blue banner shown the backend is ready*/}
+<div>
+      {/* Bootstrap Alert component */}
+      <Alert show={showInfoBanner} variant="info" onClose={() => setShowInfoBanner(true)} dismissible>
+      The JSON Compare service is ready!
+      </Alert>
+    </div>
       {/* compare form */}
       <div>
         <div id="input-left" className="left input-left">

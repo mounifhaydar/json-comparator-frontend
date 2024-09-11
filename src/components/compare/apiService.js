@@ -1,3 +1,4 @@
+import { json } from 'react-router-dom';
 import { API_CONSTANTS, APP_CONSTANTS } from '../../constants';
 
 
@@ -10,7 +11,13 @@ export const fetchGreetingAPI = async (maxAttempts = 6, delay = 20000) => {
   
     const callAPI = async () => {
       try {
-        const response = await fetch(API_CONSTANTS.COMPARATOR_ROUTE_COMPARE_DETAILS); // Replace with your actual API endpoint
+        const response = await fetch(API_CONSTANTS.COMPARATOR_ROUTE_COMPARE_DETAILS, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({actual:{},expected:{}},null,2),
+        }); // Replace with your actual API endpoint
         if (response.ok) {
           return response; // If the response is successful, return it
         } else {
@@ -20,7 +27,7 @@ export const fetchGreetingAPI = async (maxAttempts = 6, delay = 20000) => {
       } catch (error) {
         attempts++;
         if (attempts >= maxAttempts) {
-          throw new Error('Max attempts reached');
+          //throw new Error('Max attempts reached');
         }
         console.log(`Retrying... (${attempts})`);
         await new Promise(res => setTimeout(res, delay)); // Wait before retrying
@@ -28,13 +35,14 @@ export const fetchGreetingAPI = async (maxAttempts = 6, delay = 20000) => {
       }
     };
   
+    //await callAPI();
     return callAPI(); // Start the API call
   };
 
   export const fetchCompareDataAPI = async (jsonString) => {
     try {
        // throw new Error('atestt');
-      const response = await fetch(API_CONSTANTS.COMPARATOR_ROUTE_COMPARE_DETAILS, {
+      /*const response = */await fetch(API_CONSTANTS.COMPARATOR_ROUTE_COMPARE_DETAILS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,11 +56,7 @@ export const fetchGreetingAPI = async (maxAttempts = 6, delay = 20000) => {
             // Handle the error response
             throw new Error('apiService-6000: ERROR Data API call failed');
         }
-    })
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
+    }).catch((error) => {
         console.error('Error fetching data:', error);
         throw new Error('apiService-6010: Data API call failed');
       })
