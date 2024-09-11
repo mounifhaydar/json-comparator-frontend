@@ -41,8 +41,7 @@ export const fetchGreetingAPI = async (maxAttempts = 6, delay = 20000) => {
 
   export const fetchCompareDataAPI = async (jsonString) => {
     try {
-       // throw new Error('atestt');
-      /*const response = */await fetch(API_CONSTANTS.COMPARATOR_ROUTE_COMPARE_DETAILS, {
+      const responseO = await fetch(API_CONSTANTS.COMPARATOR_ROUTE_COMPARE_DETAILS, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -51,7 +50,8 @@ export const fetchGreetingAPI = async (maxAttempts = 6, delay = 20000) => {
       }).then((response) => {
         if (response.ok) { 
             // The response status is in the range 200-299
-      return response.json();  // Convert the response body to JSON
+            console.log("response.ok");
+          return response.json();  // Convert the response body to JSON
         }else{
             // Handle the error response
             throw new Error('apiService-6000: ERROR Data API call failed');
@@ -64,6 +64,9 @@ export const fetchGreetingAPI = async (maxAttempts = 6, delay = 20000) => {
         ; // Set loading state to false after API call
       });
 
+      // console.log("responseO");
+      // console.log(responseO);
+      return responseO;
     } catch (error) {      
       console.error('Error fetching data:', error);
       throw new Error('apiService-6020: Data API call failed');

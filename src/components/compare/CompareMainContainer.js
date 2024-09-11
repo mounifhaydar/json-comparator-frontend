@@ -101,13 +101,13 @@ const compareData = async () => {
 
     setLoading(true); // Set loading state to true before API call
     const cmpOut =  await fetchCompareDataAPI(jsonString);
-    alert(JSON.stringify(cmpOut, null, 2));
+    console.log("cmpOut");
+    console.log(cmpOut);
     setCompareOut(JSON.stringify(cmpOut, null, 2));
   
     setLoading(false);
     window.requestAnimationFrame(() => {
       if (resultRef.current) {
-        console.log(resultRef);
         resultRef.current.scrollIntoView({ behavior: 'smooth'  ,block: 'start', // Align the top of the element with the top of the viewport
           }); // Scroll to the element
       }
@@ -161,7 +161,7 @@ const clear = async () => {
             {/* Blue banner shown the backend is ready*/}
 <div>
       {/* Bootstrap Alert component */}
-      <Alert show={showInfoBanner} variant="info" onClose={() => setShowInfoBanner(true)} dismissible>
+      <Alert show={showInfoBanner} variant="info" onClose={() => setShowInfoBanner(false)} dismissible>
       The JSON Compare service is ready!
       </Alert>
     </div>
