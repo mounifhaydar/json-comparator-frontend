@@ -1,4 +1,11 @@
 import React, { useState ,useEffect, useRef } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css'; // CSS for styling
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // JavaScript for transitions and behaviors
+import { Alert } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { wakeUpCompareAPI, fetchCompareDataAPI } from './apiService';
+
 import CompareInput from './CompareInput';
 import Message from './Message';
 import CompareResult from './CompareResult';
@@ -17,7 +24,11 @@ const rightS = "expected";
 
 function CompareMainContainer(){
 
-  
+  const [showBanner, setShowBanner] = useState(true);  // Controls the yellow banner visibility
+  const [showErrorBanner, setShowErrorBanner] = useState(false);  // Controls the red banner visibility
+  const [data, setData] = useState(null);  // Holds data from the second API
+
+
   const [leftInput, setLeftInput] = useState(null); // Use state for dynamic values
   const [rightInput, setRightInput] = useState(null); // Use state for dynamic values
   const [isFirstLoad, setIsFirstLoad] = useState(false); // Track initialization
@@ -53,82 +64,59 @@ useEffect(() => {
     setIsFirstLoad(true);
 },[]);// Run only once on component load
 
-// Use this effect to call onClickCompare after both states are updated
+// call on isFirstLoad
 useEffect(() => {
   if (isFirstLoad) {
     setIsFirstLoad(false);
-    onClickCompare();
+
+    const initiateAPICalls = async () => {
+      try {
+        await wakeUpCompareAPI();  // Polling the first API until success or max attempts reached
+        setShowBanner(false);  // Hide the yellow banner when successful
+        compareData();
+      } catch (error) {
+        console.error('API error:', error);
+        setShowBanner(false);
+        setShowErrorBanner(true);  // Show the red banner if polling fails
+      }finally{
+        setLoading(false);
+      }
+    };
+
+    initiateAPICalls();  // Start the API calls when component mounts
   }
 }, [leftInput, rightInput]); // Trigger only when inputs are updated and initialized
 
-const fetchData = async (jsonString) => {
-  try {
-    setLoading(true); // Set loading state to true before API call
-    const response = await fetch(API_CONSTANTS.COMPARATOR_ROUTE_COMPARE_DETAILS, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonString,
-    }).then((response) => response.json())
-    .then((data) => {
-      setCompareOut(JSON.stringify(data, null, 2));
-    })
-    .catch((error) => {
-      console.error('Error fetching data:', error);
-      alert("error on calling compare API: ", error);
-    })
-    .finally(() => {
-      setLoading(false); // Set loading state to false after API call
-     // setTimeout(() => {
-     
-      /*
-      if (resultRef.current) {
-        resultRef.current.scrollIntoView({ behavior: 'smooth'  ,block: 'start', // Align the top of the element with the top of the viewport
-        }); // Scroll to the element
-        }*/
-    //  }, 100); // Adjust delay if needed
-    });
+const onClickCompare = async () => {
+  if(leftInput && rightInput && validateJson(leftInput) && validateJson(rightInput)){
+    compareData();
+}
+};
 
-    /*if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    setCompareOut(JSON.stringify(data, null, 2));  
-    setLoading(false); // Set loading state to false after API call
-    setTimeout(() => {//to avoid delay Im used the useEffect
+const compareData = async () => {
+  try {
+    // Create the JSON object
+    const jsonString = buildComparatorInput();
+
+    setLoading(true); // Set loading state to true before API call
+    const cmpOut =  await fetchCompareDataAPI(jsonString);
+    setCompareOut(JSON.stringify(cmpOut, null, 2));
+  
+    setLoading(false);
+    window.requestAnimationFrame(() => {
       if (resultRef.current) {
         console.log(resultRef);
         resultRef.current.scrollIntoView({ behavior: 'smooth'  ,block: 'start', // Align the top of the element with the top of the viewport
           }); // Scroll to the element
       }
-  }, 500); // Adjust delay if needed
-    */
-
-  window.requestAnimationFrame(() => {
-  if (resultRef.current) {
-    console.log(resultRef);
-    resultRef.current.scrollIntoView({ behavior: 'smooth'  ,block: 'start', // Align the top of the element with the top of the viewport
-      }); // Scroll to the element
-  }
-});
-
-  } catch (error) {
+    });
+   
+  } catch (error) { 
+    console.error('API error:', error);
+    alert("error on calling compare API: ", error);
+  } finally{
     setLoading(false); // Set loading state to false after API call
-    console.error('Error fetching data:', error);
   }
-};
-
-const onClickCompare = async () => {
-  if(leftInput && rightInput && validateJson(leftInput) && validateJson(rightInput)){
-    
-    // Create the JSON object
-    const jsonString = buildComparatorInput();
-
-
-  
-  fetchData(jsonString);
-}
 };
 
 const onClickSwap = async () => {
@@ -149,24 +137,26 @@ const clear = async () => {
     setCompareOut(null);
 };
 
-/*
-//on change
-useEffect(() => {
-  onClickCompare();
- if(leftInput && rightInput && validateJson(leftInput) && validateJson(rightInput)){
-    
-  // Create the JSON object
-  const jsonString = buildComparatorInput();
-
-
-
-fetchData(jsonString);
-}
-}, [leftInput, rightInput]);
-*/
-
   return (
     <div className="CompareMainContainer">
+{/*Banner status */}
+      {/* Yellow banner shown initially while waiting for backend to wake up */}
+<div>
+      {/* Bootstrap Alert component */}
+      <Alert show={showBanner} variant="warning" onClose={() => setShowBanner(false)} dismissible>
+          This service is freely available, so please be patient while the backend instance wakes up. This process typically takes less than one minute.
+      </Alert>
+    </div>
+      
+      {/* Red banner shown if 24 attempts fail */}
+      <div>
+      {/* Bootstrap Alert component */}
+      <Alert show={showErrorBanner} variant="danger" onClose={() => setShowErrorBanner(false)} dismissible>
+        Something went wrong. The backend instance could not wake up. Please try again later.
+      </Alert>
+    </div>
+      
+      {/* compare form */}
       <div>
         <div id="input-left" className="left input-left">
             <CompareInput value={leftInput|| ""} onChange={setLeftInput} ></CompareInput>
