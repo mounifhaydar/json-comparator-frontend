@@ -23,7 +23,7 @@ const ActionBar = (props) => {
     };
 
         return (<div > 
-            <button disabled={!bSwap} onClick={() => swape()}>Swape</button>
+            <button disabled={!bSwap} onClick={() => swape()}>Swap</button>
             <button disabled={!bCompare} onClick={() => compare()}>Compare</button>
             <button disabled={!bClear} onClick={() => clear()}>Clear</button>
         </div>
